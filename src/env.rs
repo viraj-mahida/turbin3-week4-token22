@@ -1,5 +1,6 @@
 //! Local chain used by the tests: `solana-program-test` with the Token-2022
-//! SBF program loaded from `tests/fixtures/spl_token_2022.so`.
+//! SBF program loaded from `tests/fixtures/spl_token_2022.so` and the
+//! `remit-agent` program from `tests/fixtures/remit_agent.so`.
 //!
 //! The ZK ElGamal proof program is a builtin of the bank, so confidential
 //! transfer proofs are verified on chain exactly as on a real cluster.
@@ -30,11 +31,13 @@ pub struct Env {
 }
 
 impl Env {
-    /// Starts a fresh bank with Token-2022 deployed at its canonical address.
+    /// Starts a fresh bank with Token-2022 deployed at its canonical address
+    /// and the remit-agent program at [`crate::agent::ID`].
     pub async fn start() -> Self {
         let mut program_test = ProgramTest::default();
         program_test.prefer_bpf(true);
         program_test.add_program("spl_token_2022", spl_token_2022_interface::id(), None);
+        program_test.add_program("remit_agent", crate::agent::ID, None);
         let context = program_test.start_with_context().await;
         let payer = Arc::new(clone_keypair(&context.payer));
         let context = Arc::new(Mutex::new(context));
