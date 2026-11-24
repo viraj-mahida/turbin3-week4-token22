@@ -1,0 +1,4 @@
+# solana-program-test logs every instruction at debug level unless RUST_LOG
+# is set. Keep test output readable; override with RUST_LOG=debug cargo test.
+[env]
+RUST_LOG = { value = "error", force = false }
